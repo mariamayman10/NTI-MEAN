@@ -14,6 +14,7 @@ export const createSubcategoryValidator: RequestHandler[] = [
     check('category')
     .notEmpty().withMessage('Subcategory\'s category is required')
     .isMongoId().withMessage('Subcategory\'s category is invalid'),
+    check('image').optional(),
     validatorMiddleware
 ];
 

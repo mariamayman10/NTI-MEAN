@@ -10,6 +10,8 @@ const app:express.Application = express();
 dotenv.config();
 // enable parsing of JSON-formatted request bodies
 app.use(express.json());
+// serve static access to images
+app.use(express.static('uploads'))
 // load database
 database();
 // include the routes of the app

@@ -1,0 +1,47 @@
+import UserModel from "../schemas/userSchema";
+import { User } from "../interfaces/user";
+import { createDocument, deleteDocument, getDocument, getDocuments, updateDocument } from "./controllerInterface";
+import asyncHandler from 'express-async-handler';
+import sharp from "sharp";
+import { Request, Response, NextFunction } from "express";
+import { uploadSingleImage } from "../middlewares/imagesMiddleware";
+import bcrypt from 'bcryptjs';
+import ApiErrors from "../utils/apiErrors";
+
+export const uploadUserImage = uploadSingleImage('image');
+export const resizeUserImage = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    if(req.file){
+        const userImage: string = `user-${Date.now()}.jpeg`
+        await sharp(req.file.buffer)
+            .toFormat('jpeg')
+            .jpeg({ quality: 95 })
+            .toFile(`uploads/users/${userImage}`);
+        req.body.image = userImage;
+    }
+    next();
+});
+export const changeUserPassword = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    const user = await UserModel.findByIdAndUpdate(req.body.id, {
+        password: await bcrypt.hash(req.body.password, 13),
+        passwordChangedAt: Date.now()
+    }, {new:true});
+    if(!user){
+        return next(new ApiErrors('User is not found', 404));
+    }
+    res.status(200).json({message: 'User\'s password is changed successfully', data: user});
+});
+
+
+export const createUser = createDocument<User>(UserModel);
+export const updateUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    const user = await UserModel.findByIdAndUpdate(req.params.id, {
+        name: req.body.name,
+        image: req.body.image,
+        active: req.body.active
+    }, { new: true })
+    if (!user) { return next(new ApiErrors('User is not found', 404)) };
+    res.status(200).json({ data: user, message: 'User is updated successfully' })
+})
+export const deleteUser = deleteDocument<User>(UserModel);
+export const getUser = getDocument<User>(UserModel);
+export const getUsers = getDocuments<User>(UserModel, 'users');

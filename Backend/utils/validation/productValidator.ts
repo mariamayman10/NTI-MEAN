@@ -60,11 +60,11 @@ export const deleteProductValidator: RequestHandler[] = [
 ];
 
 export const updateProductValidator: RequestHandler[] = [
-    check('name').notEmpty().withMessage('Product\'s name is required')
+    check('name').optional()
         .isLength({min:2, max:30}).withMessage('Product name\'s length should be between 2 and 30'),
-    check('description').notEmpty().withMessage('Product\'s description is required')
+    check('description').optional()
         .isLength({min:10, max:150}).withMessage('Product description\'s length should be between 10 and 150'),
-    check('price').notEmpty().withMessage('Product\'s price is required')
+    check('price').optional()
         .isNumeric().withMessage('Product\'s price should be number').toFloat()
         .custom((val) => {
             if(val <= 0 || val > 1000000){throw new Error('Invalid product price')}
@@ -82,14 +82,14 @@ export const updateProductValidator: RequestHandler[] = [
         if(val < 0){throw new Error('Invalid product quantity')}
         return true;
     }),
-    check('category').notEmpty().withMessage('Product\'s category is required')
+    check('category').optional()
         .isMongoId().withMessage('Invalid Product\'s category id')
         .custom(async (val) => {
             const category = await CategoryModel.findById(val);
             if(!category){throw new Error('No such a category exist')}
             return true;
         }),
-    check('subcategory').notEmpty().withMessage('Product\'s subcategory is required')
+    check('subcategory').optional()
     .isMongoId().withMessage('Invalid Product\'s subcategory id')
     .custom(async (val, {req}) => {
         const subcategory = await SubcategoryModel.findById(val);

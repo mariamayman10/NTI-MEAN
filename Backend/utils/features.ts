@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import { PaginationQuery, QueryString, SearchQuery } from "../interfaces/features";
-import { queryObjects } from "v8";
 
 export class Features{
     public paginationResult: PaginationQuery;

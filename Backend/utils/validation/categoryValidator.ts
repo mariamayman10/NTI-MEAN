@@ -13,6 +13,7 @@ export const createCategoryValidator: RequestHandler[] = [
     check('name')
     .notEmpty().withMessage('Category\'s name is required')
     .isLength({min:2, max:20}).withMessage('Category\'s name must have length between 2 and 20'),
+    check('image').optional(),
     validatorMiddleware
 ];
 
