@@ -13,18 +13,24 @@ export const createDocument = <modelType>(model: mongoose.Model<any>) => asyncHa
 export const updateDocument = <modelType>(model: mongoose.Model<any>) =>  asyncHandler (async (req: Request, res:Response, next:NextFunction) => {
     const document = await model.findByIdAndUpdate(req.params.id, req.body,{new:true});
     if(!document){return next(new ApiErrors('No document with such an id', 404))};
+    document.save();
     res.status(200).json({data: document});
 });
 
 export const deleteDocument = <modelType>(model: mongoose.Model<any>) =>  asyncHandler (async (req: Request, res:Response, next:NextFunction) => {
-    const document = await model.findByIdAndDelete(req.params.id);
+    const document = await model.findOneAndDelete({_id: req.params.id});
     if(!document){return next(new ApiErrors('No document with such an id', 404))};
     res.status(200).json();
 });
 
-export const getDocument = <modelType>(model: mongoose.Model<any>) => asyncHandler (async (req: Request, res:Response, next:NextFunction) => {
-    const document = await model.findById(req.params.id);
-    if(!document){return next(new ApiErrors('No document with such an id', 404))};
+export const getDocument = <modelType>(model: mongoose.Model<any>, population?: string) => asyncHandler (async (req: Request, res:Response, next:NextFunction) => {
+    if(population && population === 'wishlist'){
+        req.params.id = req.user?._id!.toString();
+    }
+    let query = model.findById(req.params.id);
+    if (population) { query = query.populate(population) };
+    const document = await query;
+    if(!document){ return next(new ApiErrors('No document with such an id', 404)) };
     res.status(200).json({data: document});
 });
 

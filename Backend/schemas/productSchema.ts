@@ -14,26 +14,28 @@ const ProductSchema: Schema = new Schema<Product>({
     images: [String],
     category: {type: Schema.Types.ObjectId, required:true, ref: 'Category'},
     subcategory: {type: Schema.Types.ObjectId, required:true, ref: 'Subcategory'},
-}, {timestamps:true});
+}, {timestamps:true, toJSON: {virtuals: true}, toObject: {virtuals: true}});
 
-const buildImagesUrl = (document: Product) => {
-    if(document.cover){
-        const coverUrl: string = `${process.env.BASE_URL}/products/${document.cover}`;
-        document.cover = coverUrl;
-    }
-    if(document.images){
-        const imagesUrl: string[] = [];
-        document.images.map((image) => {
-            const imageUrl = `${process.env.BASE_URL}/products/${image}`;
-            imagesUrl.push(imageUrl);
-        });
-        document.images = imagesUrl;
-    }
-}
+ProductSchema.virtual('reviews', {ref:'Review', foreignField: 'product', localField: '_id'})
 
-ProductSchema
-    .post('init', (document: Product) => buildImagesUrl(document))
-    .post('save', (document: Product) => buildImagesUrl(document))
+// const buildImagesUrl = (document: Product) => {
+//     if(document.cover){
+//         const coverUrl: string = `${process.env.BASE_URL}/products/${document.cover}`;
+//         document.cover = coverUrl;
+//     }
+//     if(document.images){
+//         const imagesUrl: string[] = [];
+//         document.images.map((image) => {
+//             const imageUrl = `${process.env.BASE_URL}/products/${image}`;
+//             imagesUrl.push(imageUrl);
+//         });
+//         document.images = imagesUrl;
+//     }
+// }
+
+// ProductSchema
+//     .post('init', (document: Product) => buildImagesUrl(document))
+//     .post('save', (document: Product) => buildImagesUrl(document))
 
 ProductSchema.pre<Product>(/^find/, function (next) {
     this.populate({ path: 'category', select: 'name' })
@@ -41,6 +43,6 @@ ProductSchema.pre<Product>(/^find/, function (next) {
     next()
 });
 
-const ProductModel = model<Product>('products', ProductSchema);
+const ProductModel = model<Product>('Product', ProductSchema);
 
 export default ProductModel;

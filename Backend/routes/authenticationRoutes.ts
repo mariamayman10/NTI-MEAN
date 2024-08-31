@@ -1,14 +1,15 @@
 import { Router } from "express";
-import { applyProtection, signIn, signUp } from "../controllers/authenticationController";
-import { signInValidator, signUpValidator } from "../utils/validation/authenticationValidator";
+import { forgetPassword, resetPassword, signIn, signUp, verifyResetCode } from "../controllers/authenticationController";
+import { forgetPasswordValidator, ResetPasswordValidator, signInValidator, signUpValidator, verifyResetCodeValidator } from "../utils/validation/authenticationValidator";
 import { uploadUserImage, resizeUserImage } from './../controllers/userController';
 
 
 const AuthenticationRoutes: Router = Router();
 
-AuthenticationRoutes.use('/signup', uploadUserImage, resizeUserImage, signUpValidator,signUp);
-AuthenticationRoutes.use('/signin', signInValidator,signIn);
-// AuthenticationRoutes.use('/gg', applyProtection);
-
+AuthenticationRoutes.route('/signup').post(uploadUserImage, resizeUserImage, signUpValidator, signUp);
+AuthenticationRoutes.route('/signin').post(signInValidator, signIn);
+AuthenticationRoutes.route('/forgetPassword').post(forgetPasswordValidator, forgetPassword);
+AuthenticationRoutes.route('/verifyResetCode').post(verifyResetCodeValidator, verifyResetCode);
+AuthenticationRoutes.route('/resetPassword').post(ResetPasswordValidator, resetPassword);
 
 export default AuthenticationRoutes;

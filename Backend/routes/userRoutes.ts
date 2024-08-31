@@ -1,19 +1,29 @@
 import { Router } from "express";
-import { changeUserPassword, createUser, deleteUser, getUser, getUsers, resizeUserImage, updateUser } from "../controllers/userController";
-import { changePasswordValidation, createUserValidator, deleteUserValidator, getUserValidator, updateUserValidator } from "../utils/validation/userValidator";
-import { uploadUserImage } from './../controllers/userController';
+import { uploadUserImage, changeSignedInUserPassword, changeUserPassword, createUser, deleteUser, getSignInUser, getUser, getUsers, resizeUserImage, updateSignedInUser, updateUser } from "../controllers/userController";
+import { changePasswordValidator, changeSignedInPasswordValidator, createUserValidator, deleteUserValidator, getUserValidator, updateSignedInUserValidator, updateUserValidator } from "../utils/validation/userValidator";
 import { allowedTo, applyProtection, checkActive } from "../controllers/authenticationController";
 
 
 const UserRoutes: Router = Router();
-UserRoutes.use(applyProtection, checkActive, allowedTo('manager'))
-UserRoutes.put('/:id/changePassword', changePasswordValidation, changeUserPassword);
+
+// apply "applyProtection" and "checkActive" to all routes
+UserRoutes.use(applyProtection, checkActive);
+
+UserRoutes.get('/me', getSignInUser, getUser);
+UserRoutes.put('/updateMe', updateSignedInUserValidator, updateSignedInUser);
+UserRoutes.put('/changeMyPassword', changeSignedInPasswordValidator, changeSignedInUserPassword);
+UserRoutes.delete('/deleteMe', allowedTo('user'), getSignInUser, deleteUser);
+
+
+// Routes allowed to manager only
+UserRoutes.use(allowedTo('manager'));
+UserRoutes.put('/:userId/changePassword', changePasswordValidator, changeUserPassword);
 UserRoutes.route('/')
     .get(getUsers)
-    .post(applyProtection, uploadUserImage, resizeUserImage, createUserValidator,createUser);
+    .post(uploadUserImage, resizeUserImage, createUserValidator, createUser);
 UserRoutes.route('/:id')
     .get(getUserValidator, getUser)
-    .delete(applyProtection, deleteUserValidator, deleteUser)
-    .put(applyProtection, uploadUserImage, resizeUserImage, updateUserValidator ,updateUser);
+    .delete(deleteUserValidator, deleteUser)
+    .put(uploadUserImage, resizeUserImage, updateUserValidator, updateUser);
 
 export default UserRoutes;

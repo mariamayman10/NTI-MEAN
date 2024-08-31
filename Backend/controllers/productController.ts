@@ -10,8 +10,7 @@ import { uploadMultipleImage } from "../middlewares/imagesMiddleware";
 export const uploadProductImages = uploadMultipleImage([
     {name: 'cover', maxCount: 1},
     {name: 'images', maxCount: 5}
-])
-
+]);
 export const resizeProductImages = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     if(req.files){
         if(req.files.cover){
@@ -35,18 +34,7 @@ export const resizeProductImages = asyncHandler(async (req: Request, res: Respon
         }
     }
     next()
-})
-
-export const createProduct = createDocument<Product>(ProductModel);
-
-export const updateProduct = updateDocument<Product>(ProductModel);
-
-export const deleteProduct = deleteDocument<Product>(ProductModel);
-
-export const getProduct = getDocument<Product>(ProductModel);
-
-export const getProducts = getDocuments<Product>(ProductModel, 'products');
-
+});
 export const filterData = (req:Request, res:Response, next: NextFunction) => {
     let filterDataObj:FilterData = {};
     if(req.params.subcategoryId){
@@ -54,4 +42,11 @@ export const filterData = (req:Request, res:Response, next: NextFunction) => {
     }
     req.filterData = filterDataObj;
     next();
-}
+};
+
+
+export const createProduct = createDocument<Product>(ProductModel);
+export const updateProduct = updateDocument<Product>(ProductModel);
+export const deleteProduct = deleteDocument<Product>(ProductModel);
+export const getProduct = getDocument<Product>(ProductModel, 'reviews');
+export const getProducts = getDocuments<Product>(ProductModel, 'Product');

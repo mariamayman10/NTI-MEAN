@@ -7,16 +7,16 @@ const CategorySchema: Schema = new Schema<Category>(
     },{timestamps:true}
 );
 
-const imageUrl = (document: Category) => {
-    if(document.image){
-        const imageUrl:string = `${process.env.BASE_URL}/categories/${document.image}`;
-        document.image = imageUrl; 
-    }
-}
+// const imageUrl = (document: Category) => {
+//     if(document.image){
+//         const imageUrl:string = `${process.env.BASE_URL}/categories/${document.image}`;
+//         document.image = imageUrl; 
+//     }
+// }
 
-CategorySchema
-    .post('init', (document: Category) => imageUrl(document))
-    .post('save', (document: Category) => imageUrl(document))
+// CategorySchema
+//     .post('init', (document: Category) => imageUrl(document))
+//     .post('save', (document: Category) => imageUrl(document))
 
 
 const CategoryModel = model<Category>('Category', CategorySchema);

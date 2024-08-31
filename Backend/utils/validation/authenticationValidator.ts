@@ -2,6 +2,7 @@ import { RequestHandler } from "express";
 import { check } from "express-validator";
 import validatorMiddleware from "../../middlewares/validatorMiddleware";
 import UserModel from "../../schemas/userSchema";
+import { verifyResetCode } from './../../controllers/authenticationController';
 
 
 export const signUpValidator: RequestHandler[] = [
@@ -18,14 +19,14 @@ export const signUpValidator: RequestHandler[] = [
         }),
     check('password')
         .notEmpty().withMessage('Password is required')
-        .isLength({ min: 8, max: 20 }).withMessage('Password\'s length should be between 8 and 20 char')
-        .custom((val: string, { req }) => {
-            if (val !== req.body.confirmPassword) { throw new Error("Passwords don't match") }
-            return true;
-        }),
+        .isLength({ min: 8, max: 20 }).withMessage('Password\'s length should be between 8 and 20 char'),
     check('confirmPassword')
         .notEmpty().withMessage('Confirm password is required')
-        .isLength({ min: 8, max: 20 }).withMessage('confirm password length should be between 8 and 20 char'),
+        .isLength({ min: 8, max: 20 }).withMessage('confirm password length should be between 8 and 20 char')
+        .custom((val: string, { req }) => {
+            if (val !== req.body.password) { throw new Error("Passwords don't match") }
+            return true;
+        }),
     validatorMiddleware
 ];
 
@@ -36,3 +37,28 @@ export const signInValidator: RequestHandler[] = [
     validatorMiddleware
 ];
 
+export const forgetPasswordValidator: RequestHandler[] = [
+    check('email').notEmpty().withMessage('Email is required')
+        .isEmail().withMessage('Email is not a valid email'),
+    validatorMiddleware
+];
+
+export const verifyResetCodeValidator: RequestHandler[] = [
+    check('resetCode').notEmpty().withMessage('Reset code is required')
+        .isLength({max:6, min:6}).withMessage('Invalid reset code'),
+    validatorMiddleware
+];
+
+export const ResetPasswordValidator: RequestHandler[] = [
+    check('password')
+        .notEmpty().withMessage('Password is required')
+        .isLength({ min: 8, max: 20 }).withMessage('Password\'s length should be between 8 and 20 char'),
+    check('confirmPassword')
+        .notEmpty().withMessage('Confirm password is required')
+        .isLength({ min: 8, max: 20 }).withMessage('confirm password length should be between 8 and 20 char')
+        .custom((val: string, { req }) => {
+            if (val !== req.body.password) { throw new Error("Passwords don't match") }
+            return true;
+        }),
+    validatorMiddleware
+];

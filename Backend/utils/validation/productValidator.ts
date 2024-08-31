@@ -45,7 +45,7 @@ export const createProductValidator: RequestHandler[] = [
     .isMongoId().withMessage('Invalid Product\'s subcategory id')
     .custom(async (val, {req}) => {
         const subcategory = await SubcategoryModel.findById(val);
-        if(!subcategory){throw new Error('No such a category exist')}
+        if(!subcategory){throw new Error('No such a subcategory exist')}
         if(subcategory.category._id!.toString() !== req.body.category.toString()){
             throw new Error('Subcategory doesn\'t belong to the category');
         }
@@ -60,6 +60,7 @@ export const deleteProductValidator: RequestHandler[] = [
 ];
 
 export const updateProductValidator: RequestHandler[] = [
+    check('id').isMongoId().withMessage('Invalid Mongo Id'),
     check('name').optional()
         .isLength({min:2, max:30}).withMessage('Product name\'s length should be between 2 and 30'),
     check('description').optional()
@@ -93,7 +94,7 @@ export const updateProductValidator: RequestHandler[] = [
     .isMongoId().withMessage('Invalid Product\'s subcategory id')
     .custom(async (val, {req}) => {
         const subcategory = await SubcategoryModel.findById(val);
-        if(!subcategory){throw new Error('No such a category exist')}
+        if(!subcategory){throw new Error('No such a subcategory exist')}
         if(subcategory.category._id!.toString() !== req.body.category.toString()){
             throw new Error('Subcategory doesn\'t belong to the category');
         }

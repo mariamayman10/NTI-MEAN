@@ -7,11 +7,12 @@ import { Request, Response, NextFunction } from "express";
 import { uploadSingleImage } from "../middlewares/imagesMiddleware";
 import bcrypt from 'bcryptjs';
 import ApiErrors from "../utils/apiErrors";
+import { createToken } from "../utils/createToken";
 
 export const uploadUserImage = uploadSingleImage('image');
 export const resizeUserImage = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     if(req.file){
-        const userImage: string = `user-${Date.now()}.jpeg`
+        const userImage: string = `User-${Date.now()}.jpeg`
         await sharp(req.file.buffer)
             .toFormat('jpeg')
             .jpeg({ quality: 95 })
@@ -20,15 +21,36 @@ export const resizeUserImage = asyncHandler(async (req: Request, res: Response, 
     }
     next();
 });
+
+
 export const changeUserPassword = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    const user = await UserModel.findByIdAndUpdate(req.body.id, {
-        password: await bcrypt.hash(req.body.password, 13),
+    const user = await UserModel.findByIdAndUpdate(req.params.userId, {
+        password: await bcrypt.hash(req.body.newPassword, 13),
         passwordChangedAt: Date.now()
     }, {new:true});
     if(!user){
         return next(new ApiErrors('User is not found', 404));
     }
     res.status(200).json({message: 'User\'s password is changed successfully', data: user});
+});
+export const getSignInUser = asyncHandler(( req: Request, res: Response, next: NextFunction) => {
+    req.params.id = req.user?._id!.toString();
+    next();
+});
+export const updateSignedInUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    const user = await UserModel.findByIdAndUpdate(req.user?._id, {
+        name: req.body.name,
+        image: req.body.image,
+    }, { new: true })
+    res.status(200).json({ data: user, message: 'User is updated successfully' })
+});
+export const changeSignedInUserPassword = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    const user = await UserModel.findByIdAndUpdate(req.user?._id, {
+        password: await bcrypt.hash(req.body.newPassword, 13),
+        passwordChangedAt: Date.now()
+    }, {new:true});
+    const token = createToken(user?._id);
+    res.status(200).json({token, message: 'User\'s password is changed successfully'});
 });
 
 
@@ -44,4 +66,4 @@ export const updateUser = asyncHandler(async (req: Request, res: Response, next:
 })
 export const deleteUser = deleteDocument<User>(UserModel);
 export const getUser = getDocument<User>(UserModel);
-export const getUsers = getDocuments<User>(UserModel, 'users');
+export const getUsers = getDocuments<User>(UserModel, 'User');
