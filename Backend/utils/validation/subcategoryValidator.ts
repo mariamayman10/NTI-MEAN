@@ -2,6 +2,7 @@ import { RequestHandler } from "express";
 import { check } from "express-validator";
 import validatorMiddleware from "../../middlewares/validatorMiddleware";
 import CategoryModel from "../../schemas/categorySchema";
+import SubcategoryModel from "../../schemas/subcategorySchema";
 
 
 export const getSubcategoryValidator: RequestHandler[] = [
@@ -15,11 +16,13 @@ export const createSubcategoryValidator: RequestHandler[] = [
     check('category')
         .notEmpty().withMessage('Subcategory\'s category is required')
         .isMongoId().withMessage('Subcategory\'s category is invalid')
-        .custom(async (val) => {
+        .custom(async (val, {req}) => {
             const category = await CategoryModel.findById(val);
             if (!category) {
                 throw new Error('Category Not Found');
             }
+            const subcategory = await SubcategoryModel.findOne({name: req.body.name, category: category});
+            if(subcategory) throw new Error('Subcategory already exists');
             return true;
         }),
     check('image').optional(),

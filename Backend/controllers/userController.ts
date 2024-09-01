@@ -67,3 +67,28 @@ export const updateUser = asyncHandler(async (req: Request, res: Response, next:
 export const deleteUser = deleteDocument<User>(UserModel);
 export const getUser = getDocument<User>(UserModel);
 export const getUsers = getDocuments<User>(UserModel, 'User');
+
+export const addAddress = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    console.log('add address')
+    const address = {street: req.body.street, city: req.body.city, state: req.body.state, apartmentNo:req.body.apartmentNo}
+    const user = await UserModel.findByIdAndUpdate(req.user?._id,{
+        $push: {addresses: address}
+    },{new: true});
+    res.status(200).json({ data: user?.addresses });
+});
+export const removeAddress = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    const user = await UserModel.findByIdAndUpdate(req.user?._id, {
+        $pull: { 
+            addresses: {
+                street: req.body.street,
+                city: req.body.city,
+                state: req.body.state,
+                apartmentNo: req.body.apartmentNo,
+            }
+        }
+    }, { new: true, runValidators: true});
+    res.status(200).json({ data: user?.addresses })
+});
+export const getAddresses = (req: Request, res: Response, next: NextFunction) => {
+    res.status(200).json({data: req.user?.addresses});
+}

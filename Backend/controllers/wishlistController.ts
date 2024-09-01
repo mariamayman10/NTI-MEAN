@@ -11,7 +11,7 @@ export const addProductToWishlist = asyncHandler(async (req: Request, res: Respo
 });
 export const removeProductFromWishlist = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const user = await UserModel.findByIdAndUpdate(req.user?._id, {
-        $pull: { wishlist: req.params.product }
+        $pull: { wishlist: req.params.productId }
     }, { new: true });
     res.status(200).json({ data: user?.wishlist })
 });

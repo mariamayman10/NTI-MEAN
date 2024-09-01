@@ -10,7 +10,12 @@ const UserSchema: Schema = new Schema<User>(
         password: {type: String, required:true, minlength:8, maxlength:100},
         image: {type: String},
         wishlist: [{ type: Schema.Types.ObjectId, ref: 'Product' }],
-        addresses : [{type: Schema.Types.ObjectId, ref: 'Address'}],
+        addresses : [{
+            street: {type:String, required:true, trim:true},
+            city: {type:String, required:true, trim:true},
+            state: {type:String, required:true, trim:true},
+            apartmentNo: {type:String, required:true, trim:true},
+        }],
         role: {type:String, required:true, enum: ['manager', 'admin', 'user'], default: 'user'},
         active: { type: Boolean, default: true },
         passwordChangedAt: {type: Date},
@@ -19,17 +24,6 @@ const UserSchema: Schema = new Schema<User>(
         resetCodeVerify: {type: Boolean}
     },{timestamps: true}
 );
-
-// const imageUrl = (document: User) => {
-//     if(document.image){
-//         const imageUrl:string = `${process.env.BASE_URL}/users/${document.image}`;
-//         document.image = imageUrl; 
-//     }
-// }
-
-// UserSchema
-//     .post('init', (document: User) => imageUrl(document))
-//     .post('save', (document: User) => imageUrl(document))
 
 UserSchema.pre<User>('save', async function(next) {
     if(!this.isModified('password')){

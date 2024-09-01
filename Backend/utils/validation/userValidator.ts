@@ -3,6 +3,7 @@ import { check } from "express-validator";
 import validatorMiddleware from "../../middlewares/validatorMiddleware";
 import UserModel from "../../schemas/userSchema";
 import bcrypt from 'bcryptjs';
+import { removeAddress } from './../../controllers/userController';
 
 
 export const createUserValidator: RequestHandler[] = [
@@ -100,3 +101,27 @@ export const changeSignedInPasswordValidator: RequestHandler[] = [
     validatorMiddleware
 ];
 
+
+export const addAddressValidator: RequestHandler[] = [
+    check('street').isEmpty().withMessage('Street name is required')
+        .isLength({ min: 3, max: 50 }).withMessage('Street name length should be between 3 and 50'),
+    check('city').isEmpty().withMessage('City name is required')
+        .isLength({ min: 3, max: 50 }).withMessage('City name length should be between 3 and 50'),
+    check('state').isEmpty().withMessage('State name is required')
+        .isLength({ min: 3, max: 50 }).withMessage('State name length should be between 3 and 50'),        
+    check('apartmentNo').isEmpty().withMessage('apartmentNo is required')    
+        .isLength({ min: 1, max: 5 }).withMessage('apartmentNo length should be between 1 and 5'),
+    validatorMiddleware
+];
+
+export const removeAddressValidator: RequestHandler[] = [
+    check('street').isEmpty().withMessage('Street name is required')
+        .isLength({ min: 3, max: 50 }).withMessage('Street name length should be between 3 and 50'),
+    check('city').isEmpty().withMessage('City name is required')
+        .isLength({ min: 3, max: 50 }).withMessage('City name length should be between 3 and 50'),
+    check('state').isEmpty().withMessage('State name is required')
+        .isLength({ min: 3, max: 50 }).withMessage('State name length should be between 3 and 50'),        
+    check('apartmentNo').isEmpty().withMessage('apartmentNo is required')    
+        .isLength({ min: 1, max: 5 }).withMessage('apartmentNo length should be between 1 and 5'),
+    validatorMiddleware
+];

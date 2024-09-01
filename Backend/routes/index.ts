@@ -9,7 +9,8 @@ import UserRoutes from "./userRoutes";
 import AuthenticationRoutes from "./authenticationRoutes";
 import ReviewRoutes from "./reviewRoutes";
 import WishlistRoutes from "./wishlistRoutes";
-import AddressRoutes from "./addressRoutes";
+import CouponRoutes from "./couponRoutes";
+import CartRoutes from "./cartRoutes";
 
 export const appRoutes = (app:Application):void => {
     app.use('/api/v1/category', CategoryRoutes);
@@ -17,7 +18,8 @@ export const appRoutes = (app:Application):void => {
     app.use('/api/v1/products', ProductRoutes);
     app.use('/api/v1/review', ReviewRoutes);
     app.use('/api/v1/user', UserRoutes);
-    app.use('/api/v1/address', AddressRoutes);
+    app.use('/api/v1/cart', CartRoutes);
+    app.use('/api/v1/coupon', CouponRoutes);
     app.use('/api/v1/wishlist', WishlistRoutes);
     app.use('/api/v1/auth', AuthenticationRoutes);
     app.all('*', (req:Request, res:Response, next:NextFunction) => {

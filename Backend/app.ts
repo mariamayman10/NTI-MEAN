@@ -1,4 +1,9 @@
 import express from 'express';
+import cors from 'cors';
+import compression from 'compression';
+import mongoSanitize from 'express-mongo-sanitize';
+import helmet from 'helmet';
+import hpp from 'hpp';
 import dotenv from 'dotenv';
 import database from './config/database';
 import { appRoutes } from './routes';
@@ -9,7 +14,17 @@ const app:express.Application = express();
 // read .env
 dotenv.config();
 // enable parsing of JSON-formatted request bodies
-app.use(express.json());
+app.use(express.json({limit: '10kb'}));
+app.use(cors({
+    origin: ['http://localhost:3001', ''],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+}));
+app.use(compression());
+app.use(mongoSanitize());
+app.use(hpp({ whitelist: ['price', 'category', 'subcategory', 'ratingAverage', 'sold'] }));
+app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }))
 // serve static access to images
 app.use(express.static('uploads'))
 // load database

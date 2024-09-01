@@ -9,7 +9,7 @@ WishlistRoutes.use(applyProtection, checkActive, allowedTo('user'))
 WishlistRoutes.route('/')
     .get(getSignedInUserWishlist)
     .post(addProductToWishlist)
-WishlistRoutes.route('/:product')
+WishlistRoutes.route('/:productId')
     .delete(removeProductFromWishlist)
 
 export default WishlistRoutes;
