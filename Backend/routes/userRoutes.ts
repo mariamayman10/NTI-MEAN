@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { uploadUserImage, changeSignedInUserPassword, changeUserPassword, createUser, deleteUser, getSignInUser, getUser, getUsers, resizeUserImage, updateSignedInUser, updateUser, addAddress, removeAddress, getAddresses } from "../controllers/userController";
+import { uploadUserImage, changeSignedInUserPassword, changeUserPassword, createUser, deleteUser, getSignInUser, getUser, getUsers, resizeUserImage, updateSignedInUser, updateUser, addAddress, removeAddress, getAddresses, getAddress } from "../controllers/userController";
 import { addAddressValidator, changePasswordValidator, changeSignedInPasswordValidator, createUserValidator, deleteUserValidator, getUserValidator, removeAddressValidator, updateSignedInUserValidator, updateUserValidator } from "../utils/validation/userValidator";
 import { allowedTo, applyProtection, checkActive } from "../controllers/authenticationController";
 
@@ -13,9 +13,13 @@ UserRoutes.get('/me', getSignInUser, getUser);
 UserRoutes.put('/updateMe', updateSignedInUserValidator, updateSignedInUser);
 UserRoutes.put('/changeMyPassword', changeSignedInPasswordValidator, changeSignedInUserPassword);
 UserRoutes.delete('/deleteMe', allowedTo('user'), getSignInUser, deleteUser);
+
+UserRoutes.use(allowedTo('user'));
+// UserRoutes.route('/address').post(addAddressValidator, addAddress);
 UserRoutes.post('/address', addAddressValidator, addAddress);
 UserRoutes.delete('/address', removeAddressValidator, removeAddress);
 UserRoutes.get('/address', getAddresses);
+UserRoutes.get('/address/:id', getAddress);
 
 
 // Routes allowed to manager only

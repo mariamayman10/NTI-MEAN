@@ -6,8 +6,11 @@ import helmet from 'helmet';
 import hpp from 'hpp';
 import dotenv from 'dotenv';
 import database from './config/database';
+import path from 'path';
+import {I18n} from 'i18n';
 import { appRoutes } from './routes';
 import { Server } from 'http';
+
 
 // create app
 const app:express.Application = express();
@@ -25,10 +28,19 @@ app.use(compression());
 app.use(mongoSanitize());
 app.use(hpp({ whitelist: ['price', 'category', 'subcategory', 'ratingAverage', 'sold'] }));
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }))
+
 // serve static access to images
 app.use(express.static('uploads'))
 // load database
 database();
+const i18n = new I18n({
+    locales: ['en', 'ar'],
+    directory: path.join(__dirname, 'locales'),
+    defaultLocale: 'en',
+    queryParameter: 'lang'
+})
+app.use(i18n.init)
+
 // include the routes of the app
 appRoutes(app);
 // specify port to listen

@@ -2,7 +2,6 @@ import { RequestHandler } from "express";
 import { check } from "express-validator";
 import validatorMiddleware from "../../middlewares/validatorMiddleware";
 import UserModel from "../../schemas/userSchema";
-import { verifyResetCode } from './../../controllers/authenticationController';
 
 
 export const signUpValidator: RequestHandler[] = [

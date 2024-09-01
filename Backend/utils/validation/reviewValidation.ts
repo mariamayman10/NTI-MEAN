@@ -20,7 +20,7 @@ export const createReviewValidator: RequestHandler[] = [
             return true;
         }),
     check('comment').notEmpty().withMessage('Review\'s comment is required'),
-    check('rate').notEmpty().withMessage('Review\'s comment is required')
+    check('rate').notEmpty().withMessage('Review\'s rate is required')
         .isNumeric(),
     validatorMiddleware,
 ];

@@ -6,7 +6,6 @@ import { Request, Response ,NextFunction } from 'express';
 import UserModel from "../schemas/userSchema";
 import ApiErrors from "../utils/apiErrors";
 import { sendMail } from "../utils/sendMail";
-import { User } from "../interfaces/user";
 
 
 export const createCoupon = createDocument<Coupon>(CouponModel);

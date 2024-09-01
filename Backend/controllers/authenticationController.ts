@@ -8,6 +8,7 @@ import ApiErrors from '../utils/apiErrors';
 import { createResetToken, createToken } from '../utils/createToken';
 import { sendMail } from '../utils/sendMail';
 
+
 export const signUp = asyncHandler(async (req:Request, res:Response, next:NextFunction) => {
     const user = await UserModel.create(req.body);
     const token = createToken(user._id);
@@ -83,7 +84,7 @@ export const verifyResetCode = asyncHandler(async (req: Request, res: Response, 
     let resetToken: string = '';
     if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')) // check if there is a token, and its type is bearer
         resetToken = req.headers.authorization.split(' ')[1];
-    else return next(new ApiErrors('First get the reset code', 400));
+    else return next(new ApiErrors('You don\'t have the permission', 400));
 
     const decryptedToken:any = Jwt.verify(resetToken, process.env.JWT_SECRET_KEY!);
     const user = await UserModel.findOne({
@@ -101,7 +102,7 @@ export const resetPassword = asyncHandler(async (req: Request, res: Response, ne
     let resetToken: string = '';
     if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')) // check if there is a token, and its type is bearer
         resetToken = req.headers.authorization.split(' ')[1];
-    else return next(new ApiErrors('You can\'t do this action', 400));
+    else return next(new ApiErrors('You don\'t have the permission', 400));
 
     const decryptedToken:any = Jwt.verify(resetToken, process.env.JWT_SECRET_KEY!);
     const user = await UserModel.findOne({

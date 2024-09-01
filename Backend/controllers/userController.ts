@@ -69,7 +69,6 @@ export const getUser = getDocument<User>(UserModel);
 export const getUsers = getDocuments<User>(UserModel, 'User');
 
 export const addAddress = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    console.log('add address')
     const address = {street: req.body.street, city: req.body.city, state: req.body.state, apartmentNo:req.body.apartmentNo}
     const user = await UserModel.findByIdAndUpdate(req.user?._id,{
         $push: {addresses: address}
@@ -91,4 +90,14 @@ export const removeAddress = asyncHandler(async (req: Request, res: Response, ne
 });
 export const getAddresses = (req: Request, res: Response, next: NextFunction) => {
     res.status(200).json({data: req.user?.addresses});
+}
+export const getAddress = (req: Request, res: Response, next: NextFunction) => {
+    const address = req.user?.addresses.filter((item) => {
+        item.street === req.body.street &&
+        item.city=== req.body.city &&
+        item.state === req.body.state &&
+        item.apartmentNo === req.body.apartmentNo
+    });
+    if(!address) return next(new ApiErrors('Address not found', 404));
+    res.status(200).json({data: address});
 }

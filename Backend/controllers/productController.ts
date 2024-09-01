@@ -35,6 +35,7 @@ export const resizeProductImages = asyncHandler(async (req: Request, res: Respon
     }
     next()
 });
+
 export const filterData = (req:Request, res:Response, next: NextFunction) => {
     let filterDataObj:FilterData = {};
     if(req.params.subcategoryId){

@@ -11,6 +11,7 @@ import ReviewRoutes from "./reviewRoutes";
 import WishlistRoutes from "./wishlistRoutes";
 import CouponRoutes from "./couponRoutes";
 import CartRoutes from "./cartRoutes";
+import OrderRoutes from "./orderRoutes";
 
 export const appRoutes = (app:Application):void => {
     app.use('/api/v1/category', CategoryRoutes);
@@ -19,6 +20,7 @@ export const appRoutes = (app:Application):void => {
     app.use('/api/v1/review', ReviewRoutes);
     app.use('/api/v1/user', UserRoutes);
     app.use('/api/v1/cart', CartRoutes);
+    app.use('/api/v1/order', OrderRoutes);
     app.use('/api/v1/coupon', CouponRoutes);
     app.use('/api/v1/wishlist', WishlistRoutes);
     app.use('/api/v1/auth', AuthenticationRoutes);
