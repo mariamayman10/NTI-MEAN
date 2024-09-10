@@ -6,9 +6,9 @@ import { createCouponValidator, deleteCouponValidator, getCouponValidator, updat
 
 const CouponRoutes: Router = Router();
 CouponRoutes.use(applyProtection, checkActive, allowedTo('manager', 'admin'));
-
-CouponRoutes.route('/')
+CouponRoutes.route('/send')
     .post(sendCoupon)
+CouponRoutes.route('/')
     .get(getCoupons)
     .post(createCouponValidator, createCoupon);
 CouponRoutes.route('/:id')

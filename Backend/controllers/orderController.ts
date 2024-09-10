@@ -21,7 +21,6 @@ export const getOrders = getDocuments<Order>(OrderModel, 'Order');
 
 export const getOrder = getDocument<Order>(OrderModel);
 
-
 export const createOrder = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const taxPrice: number = 100;
     const cart: any  =  await CartModel.findOne({user: req.user?._id});

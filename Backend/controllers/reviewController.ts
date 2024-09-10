@@ -9,6 +9,9 @@ export const filterReviews = (req:Request, res:Response, next: NextFunction) => 
     if(req.params.productId){
         filterDataObj.product = req.params.productId;
     }
+    if(req.user?.role === 'user' && !req.params.productId){
+        filterDataObj.user = req.user._id;
+    }
     req.filterData = filterDataObj;
     next();
 };

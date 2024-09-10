@@ -10,12 +10,11 @@ const UserRoutes: Router = Router();
 UserRoutes.use(applyProtection, checkActive);
 
 UserRoutes.get('/me', getSignInUser, getUser);
-UserRoutes.put('/updateMe', updateSignedInUserValidator, updateSignedInUser);
+UserRoutes.put('/updateMe', uploadUserImage, resizeUserImage , updateSignedInUserValidator, updateSignedInUser);
 UserRoutes.put('/changeMyPassword', changeSignedInPasswordValidator, changeSignedInUserPassword);
 UserRoutes.delete('/deleteMe', allowedTo('user'), getSignInUser, deleteUser);
 
 UserRoutes.use(allowedTo('user'));
-// UserRoutes.route('/address').post(addAddressValidator, addAddress);
 UserRoutes.post('/address', addAddressValidator, addAddress);
 UserRoutes.delete('/address', removeAddressValidator, removeAddress);
 UserRoutes.get('/address', getAddresses);
